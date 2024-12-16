@@ -1,0 +1,721 @@
+{% extends 'citas_dinissan/base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  .custom-checkbox {
+    --checkbox-color: #101010; /* Define el color deseado para el checkbox */
+  }
+  
+  .custom-checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--checkbox-color);
+    border-radius: 3px;
+    outline: none;
+    transition: background-color 0.3s;
+  }
+  
+  .custom-checkbox input[type="checkbox"]:checked {
+    background-color: var(--checkbox-color);
+    background-image: url('{% static 'citas_dinissan/images/check.png' %}');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+</style>
+
+<div class="row justify-content-center align-items-center vh-100">
+  <div class="col-12">
+    <div class="card bg-white border-0 mx-auto">
+      <form>
+        <!-- Pantalla  de inicio -->
+        <div id="0" class="card-body">
+          <div class="text-center">
+            <img class="mb-4" height="110px" src="{{ settings.LOGO }}" />
+          </div>
+          <h4 class="text-center text-danger mb-3">Citas Web</h4>
+          <h6 class="text-center">
+            Bienvenido al sistema de agendamiento Web para Mazda Colombia
+          </h6>
+        </div>
+
+        <!-- Información del Vehículo -->
+        <div id="1" class="card-body vh-100 w-100" style="display: none">
+          <div class="row">
+            <div class="col">
+              <img class="d-inline" height="30px" src="{{ settings.LOGO }}" />
+            </div>
+
+            <div class="col-9 col-md-10">
+              <h6 class="text-left mb-2">Información del Vehículo</h6>
+              <p class="text-left">
+                Ayúdenos a confirmar la información de su vehículo para brindarle atención personalizada.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm-6">
+              <label for="vehiculo_placa">Placa:</label>
+              <input name="vehiculo_placa" type="text" class="form-control" autocapitalize="characters" maxlength="7"
+                placeholder="Obligatorio" id="vehiculo_placa" data-nombre="Placa"
+                onkeyup="this.value = this.value.toUpperCase().replace(/[^a-zA-Z0-9]/g, '');" />
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="cliente_cedula">Cédula de usuario:</label>
+              <input name="cliente_cedula" type="text" class="form-control" autocapitalize="characters"
+                placeholder="Obligatorio" id="cliente_cedula" data-nombre="Cédula de usuario" />
+            </div>
+          </div>
+
+          <!-- Habeas Data -->
+          <span class="mt-4">Habeas Data</span>
+          <div class="form-group text-center px-5 px-lg-0 custom-checkbox">
+            <input class="form-check-input input-checkbox" type="checkbox" value="" id="habeas_data" name="habeas_data">
+            <label class="form-check-label text-danger" for="habeas_data">
+              <a href="https://drive.google.com/file/d/1lSqAtQ5GOL9mqvccNnMsl1h1zccA3d2n/view?usp=sharing" style="color: #940831; text-decoration: underline;">Estoy de acuerdo con la política de protección de datos y en ser contactado</a>
+            </label>
+          </div>
+
+          <div class="text-center">
+            <button id="buscar_datos_cliente" type="button" class="btn" style="background-color: #940831; color: white">
+              Buscar datos del cliente
+            </button>
+          </div>
+
+          <div id="datos_cliente_vehiculo" class="mt-4" style="display: none;">
+            <h6>Datos del cliente</h6>
+
+            <hr>
+
+            <div class="form-group">
+              <input type="hidden" id="ano" name="ano">
+              <label for="propietario_vehiculo_div">¿Es el mismo propietario el que trae vehículo al taller?</label>
+              <div id="propietario_vehiculo_div" class="form-check text-center custom-checkbox">
+                <input class="form-check-input"  type="checkbox" value="" id="propietario_vehiculo"
+                  name="propietario_vehiculo" data-nombre="Soy propietario del vehículo">
+                <label class="form-check-label text-danger"  for="propietario_vehiculo" style="color: #940831">
+                  <u style="color: #940831">Declaro soy propietario del vehículo</u>
+                </label>
+              </div>
+            </div>
+
+            <!-- Nombre del cliente -->
+            <div class="form-row">
+              <div class="form-group col-sm-4">
+                <label for="cliente_nombre">Nombre del propietario:</label>
+                <input name="cliente_nombre" type="text" autocapitalize="words" autocomplete="given-name"
+                  class="form-control" id="cliente_nombre" data-nombre="Nombre del propietario"
+                  onkeyup="this.value = this.value.replace(/[^a-zA-Z ]/g, ''); " />
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="cliente_primer_apellido">Primer apellido:</label>
+                <input value="{{datos_cliente.cliente}}" name="cliente_primer_apellido" type="text"
+                  autocapitalize="words" autocomplete="family-name" class="form-control" id="cliente_primer_apellido"
+                  data-nombre="Primer apellido" onkeyup="this.value = this.value.replace(/[^a-zA-Z ]/g, ''); " />
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="cliente_segundo_apellido">Segundo apellido:</label>
+                <input value="{{datos_cliente.cliente}}" name="cliente_segundo_apellido" type="text"
+                  autocapitalize="words" autocomplete="family-name" class="form-control" id="cliente_segundo_apellido"
+                  data-nombre="Segundo apellido" onkeyup="this.value = this.value.replace(/[^a-zA-Z ]/g, ''); " />
+              </div>
+            </div>
+
+            <!-- Celular, Telefono y Correo -->
+            <div class="form-row">
+              <div class="form-group col-sm-4">
+                <label for="cliente_celular">Celular</label>
+                <input name="cliente_celular" autocomplete="tel" type="tel" class="form-control" id="cliente_celular"
+                  data-nombre="Celular" maxlength="10"
+                  onkeyup="this.value = this.value.toUpperCase().replace(/[^0-9]/g, '');" />
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="cliente_telefono_fijo">Teléfono fijo</label>
+                <input name="cliente_telefono_fijo" autocomplete="tel" type="tel" class="form-control"
+                  id="cliente_telefono_fijo" data-nombre="Teléfono fijo" maxlength="10"
+                  onkeyup="this.value = this.value.toUpperCase().replace(/[^0-9]/g, '');" />
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="cliente_correo">Correo</label>
+                <input name="cliente_correo" autocomplete="email" type="email" class="form-control" id="cliente_correo"
+                  data-nombre="Correo" />
+              </div>
+            </div>
+
+            <!-- Dirección -->
+            <div class="form-row">
+              <div class="form-group col-sm-4">
+                <label for="cliente_direccion">Dirección</label>
+                <input name="cliente_direccion" autocomplete="street-address" type="text" class="form-control"
+                  id="cliente_direccion" data-nombre="Dirección" maxlength="250" />
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="cliente_tipo_relacion">Tipo de relación:</label>
+                <select id="cliente_tipo_relacion" name="cliente_tipo_relacion" class="form-control"
+                  data-nombre="Tipo de relación">
+                  <option value="P">Propietario</option>
+                  <option value="C">Contacto</option>
+                  <option value="Y">Conyuge</option>
+                  <option value="H">Hijo(a)</option>
+                  <option value="F">Otro Familiar</option>
+                  <option value="A">Amigo</option>
+                  <option value="K">Conductor</option>
+                </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="cliente_medio_confirmacion">Medio de confirmación:</label>
+                <select id="cliente_medio_confirmacion" name="cliente_medio_confirmacion" class="form-control"
+                  data-nombre="Medio de confirmación">
+                  <option value="E">Correo electrónico</option>
+                  <option value="M">Mensaje de texto al celular</option>
+                  <option value="L">Llamada</option>
+                </select>
+              </div>
+            </div>
+
+            <h6 class="mt-4">Datos del vehículo</h6>
+
+            <hr>
+
+            <!-- Ultimo Kilometraje Registrado, Kilometraje Actual, Chasis/VIN -->
+            <div class="form-row">
+              <div class="form-group col-sm-4">
+                <label for="vehiculo_ultimo_km">Ultimo Kilometraje Registrado:</label>
+                <input name="vehiculo_ultimo_km" type="number" class="form-control" min="0" id="vehiculo_ultimo_km"
+                  data-nombre="Ultimo KM" onkeyup="this.value = this.value.toUpperCase().replace(/[^0-9]/g, '');" />
+              </div>
+
+              <div class="form-group col-sm-4">
+                <label for="vehiculo_km_actual">Kilometraje Actual:</label>
+                <input id="vehiculo_km_actual" name="vehiculo_km_actual" type="number" autocapitalize="characters"
+                  class="form-control" data-nombre="KM Actual"
+                  onkeyup="this.value = this.value.toUpperCase().replace(/[^0-9]/g, '');" />
+              </div>
+
+              <div class="form-group col-sm-4">
+                <label for="vehiculo_vin" class="d-block">Chasis/VIN:</label>
+                <input id="vehiculo_vin" name="vehiculo_vin" type="text" maxlength="17" autocapitalize="characters"
+                  class="form-control d-inline" data-nombre="Chasis/VIN"
+                  onkeyup="this.value = this.value.toUpperCase().replace(/[^a-zA-Z0-9]/g, '');" />
+              </div>
+            </div>
+
+            <!-- Descripción de modelo tasa, Color -->
+            <div class="form-row">
+              <div class="form-group col-sm-8">
+                <label for="vehiculo_descripcion_modelo_tasa">Descripción de modelo tasa:</label>
+                <input id="vehiculo_descripcion_modelo_tasa" value="{{datos_cliente.color}}"
+                  name="vehiculo_descripcion_modelo_tasa" type="text" autocapitalize="on" class="form-control"
+                  data-nombre="Descripción de modelo tasa"
+                  onkeyup="this.value = this.value.toUpperCase().replace(/[^a-zA-Z ]/g, '');" />
+                <input id="vehiculo_codigo_modelo_tasa" name="vehiculo_codigo_modelo_tasa" type="hidden">
+              </div>
+
+              <div class="form-group col-sm-4">
+                <label for="vehiculo_color">Color:</label>
+                <input id="vehiculo_color" name="vehiculo_color" class="form-control optional" data-nombre="Color" />
+              </div>
+            </div>
+
+            <!-- Fecha de vencimiento SOAT, Fecha de vencimiento tecnomecánica -->
+            <div class="form-row">
+              <div class="form-group col-sm-4">
+                <label for="vehiculo_fecha_vencimiento_soat">Fecha de vencimiento SOAT:</label>
+                <input id="vehiculo_fecha_vencimiento_soat" name="vehiculo_fecha_vencimiento_soat" type="date"
+                  class="form-control optional" data-nombre="Fecha de vencimiento SOAT" />
+              </div>
+
+              <div class="form-group col-sm-4">
+                <label for="vehiculo_fecha_vencimiento_tecnomecanica">Fecha de vencimiento tecnomecánica:</label>
+                <input id="vehiculo_fecha_vencimiento_tecnomecanica" name="vehiculo_fecha_vencimiento_tecnomecanica"
+                  type="date" class="form-control optional" data-nombre="Fecha de vencimiento tecnomecánica" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selección de servicio -->
+        <div id="2" class="card-body vh-100 w-100" style="display: none">
+          <div class="row">
+            <div class="col">
+              <img height="30px" src="{{ settings.LOGO }}" />
+            </div>
+
+            <div class="col-9 col-md-10">
+              <h6 class="text-left mb-2">Confirmación de servicio</h6>
+              <p class="text-left">
+                Seleccione los tipos de revisiones o paquetes realizar en su vehiculo
+              </p>
+            </div>
+          </div>
+
+          <!-- Motivo de ingreso -->
+          <div class="form-group mt-5">
+            <label for="motivo_ingreso">
+              <h6>Motivo de ingreso</h6>
+            </label>
+            <select class="form-control" id="motivo_ingreso" name="motivo_ingreso">
+              <option value="" selected disabled>---</option>
+              {% for motivo_ingreso in motivos_ingreso %}
+              <option value="{{ motivo_ingreso.categoria_paquete }}">{{ motivo_ingreso.descripcion_motivo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Tipo de revisión o paquete -->
+          <div class="form-group mt-5">
+            <label for="tipo_revision_select">
+              <h6>Tipo de revisión o paquete</h6>
+            </label>
+            <select class="form-control" id="tipo_revision_select" name="tipo_revision_select">
+              <option value="" selected disabled>---</option>
+            </select>
+          </div>
+
+          <!-- Agregar tipo de revision -->
+          <div class="text-left mt-3">
+            <button id="agregar_tipo_revision" type="button" class="btn btn-danger" style="background-color: #940831; color: white">
+              Agregar tipo de revisión
+            </button>
+          </div>
+
+          <!-- 
+          <div class="form-group mt-5">
+            <label for="motivo_ingreso_mazda">
+              <h6>Motivo de ingreso Mazda</h6>
+            </label>
+            <select class="form-control" id="motivo_ingreso_mazda" name="motivo_ingreso_mazda">
+              <option value="" selected disabled>---</option>
+              {% for motivo_ingreso_mazda in motivos_ingreso_mazda %}
+              <option value="{{ motivo_ingreso_mazda.categoria_paquete }}">{{ motivo_ingreso_mazda.descripcion_motivo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="text-left mt-3">
+            <button id="agregar_tipo_revision_mazda" type="button" class="btn btn-danger" style="background-color: #940831; color: white">
+              Agregar Motivo de ingreso Mazda
+            </button>
+          </div>
+            -->
+
+
+          <div class="form-group mt-5">
+            <label for="comentarios">
+              <h6>Agregar comentarios del cliente:</h6>
+            </label>
+            <textarea rows="3" id="comentarios" name="comentarios" class="form-control optional"
+              data-nombre="Comentarios"></textarea>
+          </div>
+
+          <h6 class="mt-5">Tipo de revisión seleccionadas</h6>
+
+          <!-- Tipo de revisión seleccionadas -->
+          <div class="row">
+            <div class="col">
+              <p>Eliminar tipo de revisión o paquete seleccionado</p>
+            </div>
+            <div class="col-3">
+              <button id="borrar_tipos_revision" type="button" class="btn btn-danger" style="background-color: #940831; color: white">Borrar</button>
+            </div>
+          </div>
+          <table class="table mt-3">
+            <tbody id="tipos_revision">
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Selección de punto de servicio -->
+        <div id="3" class="card-body vh-100 w-100" style="display: none">
+          <div class="row">
+            <div class="col">
+              <img height="30px" src="{{ settings.LOGO }}" />
+            </div>
+
+            <div class="col-9 col-md-10">
+              <h6 class="text-left mb-2">Selección punto de servicio</h6>
+              <p class="text-left">
+                Favor de seleccionar fecha y hora así como punto de servicio para su cita
+              </p>
+            </div>
+          </div>
+
+          <!-- Ciudad -->
+          <div class="form-group mt-4">
+            <label for="ciudad">
+              <h6>Ciudad</h6>
+            </label>
+            <select class="form-control" id="ciudad" name="ciudad">
+              <option selected disabled>Selecciona una ciudad</option>
+              {% for ciudad in ciudades %}
+              <option>{{ ciudad.strip }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Punto de servicio -->
+          <div class="form-group mt-4">
+            <label for="punto_servicio">
+              <h6>Punto de servicio</h6>
+            </label>
+            <select class="form-control" name="punto_servicio" id="punto_servicio">
+              <option selected disabled>Selecciona un punto de servicio</option>
+              {% for agencia in agencias %}
+              <option value="">{{ agencia.nombre }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Selecciona tu fecha de cita, Elige tu asesor de servicio -->
+          <div class="row mt-lg-5">
+            <div class="col-12 col-md-6 mt-5 mt-md-0">
+              <h6>Selecciona tu fecha de cita</h6>
+              <input id="cita_fecha" type="hidden" name="cita_fecha">
+              <div id="datepicker" class="text-center mt-3" ></div>
+            </div>
+            <div class="col-12 col-md-6 mt-5 mt-md-0" >
+              <div>
+                <h6>Elige tu asesor de servicio</h6>
+                <div id="asesor_select" class="list-group" >
+                  <a type="button" class="list-group-item list-group-item-asesor list-group-item-action my-2">
+                    <div class="text-center">
+                      Selecciona un punto de servicio
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="mt-4">
+                <h6>Horarios disponibles</h6>
+                <select class="form-control" name="cita_hora" id="cita_hora" data-nombre="Horario cita">
+                  <option disabled selected>---</option>
+                  <option value="">{{ agencia.nombre }}</option>
+                  {% for hora in horas %}
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmación de cita -->
+        <div id="4" class="card-body vh-100 w-100" style="display: none">
+          <div class="row">
+            <div class="col">
+              <img height="30px" src="{{ settings.LOGO }}" />
+            </div>
+
+            <div class="col-9 col-md-10">
+              <h6 class="text-left mb-2">Confirmación de cita</h6>
+              <p class="text-left">
+                Verifique la información para su cita
+              </p>
+            </div>
+          </div>
+
+          <!-- Resumen de cita -->
+          <h6 class="mt-4">Resumen de cita</h6>
+          <table class="table table-borderless border shadow">
+            <tbody class="text-danger">
+              <tr>
+                <td>Nombre del cliente</td>
+                <td id="resumen_cliente_nombre" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Celular</td>
+                <td id="resumen_cliente_celular" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Correo</td>
+                <td id="resumen_cliente_correo" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Placa</td>
+                <td id="resumen_vehiculo_placa" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Cédula</td>
+                <td id="resumen_cliente_cedula" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Fecha cita</td>
+                <td id="resumen_cita_fecha" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Hora cita</td>
+                <td id="resumen_cita_hora" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Punto de servicio</td>
+                <td id="resumen_punto_servicio" class="text-body"></td>
+              </tr>
+              <tr>
+                <td>Nombre de asesor</td>
+                <td id="resumen_nombre_asesor" class="text-body"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h6 class="mt-4">Tipo de revisión seleccionadas</h6>
+          <table class="table mt-3">
+            <tbody id="resumen_tipos_revision">
+            </tbody>
+          </table>
+
+        </div>
+      </form>
+
+      <!-- Navegación -->
+      <div class="card-footer border-0 fixed-bottom" style="background-color: transparent; pointer-events: none;">
+        <button id="back" type="button" class="btn btn-light border float-left shadow"
+          style="display: none; pointer-events: auto;">
+          Atrás
+        </button>
+        <button id="finish" type="button" class="btn btn-danger border float-right shadow"
+          style="display: none; pointer-events: auto;">
+          Terminar
+        </button>
+        <button id="next" type="button" class="btn btn-danger border float-right" style="pointer-events: auto; background-color: #940831; color: white;">
+          Continuar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_review" data-backdrop="static" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body bg-light">
+        <h4 class="text-center"></h4>
+        <p class="lead"></p>
+
+        <div class="spinner text-center my-auto">
+          <div class="spinner-border text-info" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+
+        <div class="ready text-center my-auto" style="display: none">
+          <h4 class="text-center my-2">
+            <i class="fas fa-check-circle fa-lg"></i>
+          </h4>
+          <h4 class="text-center my-2">Todo Listo!</h4>
+          <p class="lead text-center my-2">
+            Verifique su correo para encontrar los detalles de su cita y su enlace al seguimiento de su vehículo.
+          </p>
+
+          <p class="lead text-center my-2">En el siguiente link podrá consultar los detalles de su cita.</p>
+
+          <a href="{% url 'tracker_pro_login' %}" class="btn text-info border shadow-sm my-2">
+            <i class="fas fa-poll-h fa-lg"></i>
+            Ir a {{ marca }} Tracker
+          </a>
+        </div>
+
+        <div class="error-post text-center my-auto" style="display: none">
+          <h4 class="text-center my-2">
+            <i class="fas fa-check-circle fa-lg"></i>
+          </h4>
+          <h4 class="text-center my-2">Oh No!</h4>
+          <p class="lead text-center my-2">Estamos teniendo problemas para agendar su cita, por favor vuelva a
+            intertarlo más tarde</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cita_existente" data-backdrop="static" data-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div id="alerta_cita_actual" class="my-5 text-center">
+          <h5>Este numero de placas ya cuenta con una cita</h5>
+          <div id="reagendar_group" class="text-center">
+            <a href="{% url 'tracker_pro_login' %}" class="btn btn-bubblegum my-3 shadow">
+              <i class="fas fa-times fa-lg"></i>
+              Cancelar Cita
+            </a>
+          </div>
+          <div class="my-3">
+            <a href="{% url 'tracker_pro_login' %}" class="btn btn-mint shadow">
+              <i class="fas fa-poll-h fa-lg"></i>
+              Ir a Tracker
+            </a>
+          </div>
+          <div class="mt-5">
+            <a href="{% url 'client_new' vin %}" class="btn btn-light shadow"> Volver al inicio </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navegación -->
+<script>
+  var current_form = 0;
+  var last_form = $(".card-body").length - 1;
+
+  window.citas_debug = false;
+
+  $("#next").click(function () {
+    if (current_form < last_form) {
+      // Validar data de la tarjeta actual
+      if (window.citas_debug) {
+        data_is_valid = 1;
+      } else {
+        data_is_valid = current_card_data($("#" + current_form));
+      }
+
+      if (data_is_valid) {
+        // Desvanecer tarjeta actual y  mostrar el paso siguiente si no se encuentra en la ultima
+        $("#" + current_form).fadeOut("fast", function () {
+          current_form = current_form + 1;
+          $("#" + current_form).fadeIn("fast");
+
+          resumen();
+
+          // Si la tarjeta actual no es la primera mostrar el botón "Regresar"
+          if (current_form > 0) {
+            $("#back").fadeIn("fast");
+          }
+
+          if (current_form == 1) {
+            $("#next").hide()
+          }
+
+          // SI LA TARJETA ACTUAL ES LA ULTIMA OCULTAR EL BOTON "SIGUIENTE" MOSTRAR EL BOTON DE CONFIRMACION
+          if (current_form == last_form) {
+            $("#next").fadeOut("fast", function () {
+              $("#finish").fadeIn("fast");
+            });
+          }
+        });
+      }
+    }
+  });
+
+  $("#back").click(function () {
+    if (current_form > 0) {
+      $("#" + current_form).fadeOut("fast", function () {
+        current_form = current_form - 1;
+        $("#" + current_form).fadeIn("fast");
+        if (current_form <= 0) {
+          $("#back").fadeOut("fast");
+        }
+        if (current_form != last_form) {
+          $("#finish").fadeOut("fast", function () {
+            $("#next").fadeIn("fast");
+          });
+        }
+      });
+    }
+  });
+
+  function regresar(id_pagina_origen, id_pagina_destino) {
+    $("#" + id_pagina_origen).fadeOut(400, function () {
+      $("#" + id_pagina_destino).fadeIn(400);
+      current_form = id_pagina_destino;
+    })
+  }
+</script>
+
+<!--
+  VERIFICATIONS
+-->
+<script>
+  function current_card_data(current_card_body) {
+    let inputs = $(current_card_body).find(".form-control:not('.optional')");
+    let checks = $(current_card_body).find(".custom-control-input:required");
+    let horas = $(current_card_body).find("input:radio[name=hora]");
+    let servicios_op = $(current_card_body).find("input[name=servicio]");
+    let input_correo = $(current_card_body).find("input[name=correo]");
+    let horas_toolbar = $(current_card_body).find("#toolbar");
+    let placas = $(current_card_body).find("input[name=no_placas]");
+    var valid = true;
+
+    $(inputs).each(function () {
+      if (!$(this).val()) {
+        $(this).invalid = true;
+        let item_nombre = $(this).data("nombre");
+        valid = false;
+        alert(`El campo "${item_nombre}" es obligatorio`);
+      }
+    });
+
+    $(checks).each(function () {
+      if (!this.checked) {
+        $(this).invalid = true;
+        valid = false;
+      }
+    });
+
+    if (horas_toolbar.length) {
+      if (horas.length > 0) {
+        let horas_de_citas = $(horas).filter(":checked");
+        if (horas_de_citas.length == 0) {
+          valid = false;
+          alert("Por favor, seleccione una hora para su cita");
+        }
+      } else {
+        valid = false;
+        alert("Por favor, seleccione una hora para su cita");
+      }
+    }
+
+    if (servicios_op.length > 0) {
+      let servicios_select = $(servicios_op).filter(":checked");
+      if (servicios_select.length == 0) {
+        valid = false;
+        alert(`Por favor, seleccione un servicio para continuar`);
+      }
+    }
+
+    if (input_correo.length > 0) {
+      let usr_correo = $(input_correo).first().val();
+      if (!usr_correo.match(/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/g)) {
+        valid = false;
+        alert("Por favor, ingresa una dirección de correo valida");
+      }
+    }
+
+    if (placas.length > 0) {
+      data = {};
+      data.validacion_placas = true;
+      data.placas = $(placas).val();
+      cliente_cilindros = $("#cilindros").val();
+
+      $.ajax({
+        type: "post", // "post" "get" "delete" "put"
+        data: data, // PREFERIBLEMENTE JSON
+        cache: false,
+        headers: {
+          "X-CSRFToken": Cookies.get("csrftoken"),
+        },
+        success: function () {
+          $("#alerta_cita_actual").fadeOut();
+        },
+        error: function () {
+          $(document).trigger("cita_existente");
+        },
+      });
+    }
+
+    return valid;
+  }
+</script>
+
+<!--CITA EXISTENTE-->
+<script>
+  $(document).on("cita_existente", function () {
+    $("#cita_existente").modal("toggle");
+  });
+</script>
+{% endblock %}

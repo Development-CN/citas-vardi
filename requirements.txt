@@ -1,0 +1,53 @@
+# Dependencias de Capnet Apps
+django==3.1.12 # Framework Web
+
+djangorestframework # Framework REST
+django-drf-filepond # Integracion de Filepond
+
+django-excel-response # Archivo Excel en HTTP Response
+django-mathfilters # Funciones Matematicas extendidas para templates
+
+channels==3.0.3 # Framework Websockets
+channels_redis
+redis
+
+django-pwa # Progresive Web App
+django-webpush # Notificaciones Push
+
+# Datos
+pillow
+pandas
+numpy
+
+# PDFs
+reportlab
+PyMuPDF
+PyPDF2
+
+
+# Insight
+pytesseract
+opencv-python
+python-Levenshtein
+
+# Servicios SOAP
+zeep
+lxml
+
+# Tareas asincronas
+django-q
+
+# IO
+aiohttp
+
+# Conexion a base de datos
+pyodbc
+mssql-django
+
+# Servidor ASGI
+daphne==3.0.2
+
+# Desarrollo
+black
+pylint
+pylint-django
