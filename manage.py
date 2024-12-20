@@ -58,7 +58,7 @@ settings.configure(
         "default": {
             "ENGINE": "mssql",  # No se modifica
             "HOST": "capnet3.ddns.net",  # Nombre de la instancia de SQL Server
-            "NAME": "capnet-apps-vardi",  # Nombre de la base de datos
+            "NAME": "capnet-apps-vardi-pruebas",  # Nombre de la base de datos
             "USER": "capnet_esp",  # Usuario
             "PASSWORD": ".5capnet",  # Contraseña
         }

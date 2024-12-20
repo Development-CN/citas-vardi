@@ -1,5 +1,5 @@
 # Dependencias de Capnet Apps
-django==3.1.12 # Framework Web
+django==3.2 # Framework Web
 
 djangorestframework # Framework REST
 django-drf-filepond # Integracion de Filepond

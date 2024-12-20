@@ -131,6 +131,7 @@ class DinissanServices(APIView):
         )
         token = response_token.text
         print("hola")
+        print(token)
 
         if request.data.get("info_cliente"):
             print("hola1")
@@ -284,8 +285,6 @@ class Agenda(APIView):
             print(response_dinissan.content)
         print("hola4")
         print(response_dinissan.text)
-        print(json.loads(response_dinissan.text)["mensaje"])
-        print(type(json.loads(response_dinissan.text)["mensaje"]))
 
         
         print("r")
@@ -300,7 +299,12 @@ class Agenda(APIView):
         print("CITA_CREAR")
         print(CITA_CREAR)
 
-        if json.loads(response_dinissan.text)["codigo"] == 200:
+        try:
+            codigo = json.loads(response_dinissan.text)["codigo"]
+        except:
+            codigo = 200
+
+        if codigo == 200:
             print(servicios_peticion)
             datos_cita["servicio"] = servicios_nombres_total
             print("datos_cita")
@@ -310,9 +314,13 @@ class Agenda(APIView):
             if post.status_code == 200:
                 respuesta = json.loads(post.text)
                 no_cita = respuesta["details"]["no_cita"]
-                no_cita_vardi = json.loads(response_dinissan.text)["numeroCita"]
+                try:
+                    no_cita_vardi = json.loads(response_dinissan.text)["numeroCita"]
+                except:
+                    no_cita_vardi = None
                 id_hd = respuesta["details"]["id_hd"]
                 datos_cita["NumCita"] = no_cita
+
 
             print(post.ok)
             if post.ok:
