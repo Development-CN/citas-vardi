@@ -1,10 +1,13 @@
 import json
 from typing import List
+from asgiref.sync import async_to_sync
 
 import requests as api
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+
+from .models import ScheduledTask
 
 COREAPI_URL = settings.COREAPI_MENSAJES
 HEADERS = {"Content-Type": "application/json"}
@@ -59,6 +62,10 @@ class InformacionCita:
 
     habeas_data: str = False
     propietario_vehiculo: str = False
+
+    id_sesion: str = False
+
+    username: str = None
 
     @property
         
@@ -120,7 +127,7 @@ class InformacionCita:
             "observaciones": self.comentarios[0],
             "precio": precios,
             "medioConfirmacion": self.cliente_medio_confirmacion[0],
-            "usuario": "capnetCW",
+            "usuario": self.username,
             "envioTercero": True,
             "listGrupoPaqueteDTO": lista_motivo_ingreso,
             "descripcionModeloTasa": self.vehiculo_descripcion_modelo_tasa[0].strip()
@@ -203,7 +210,8 @@ def get_data_api(request_body):
         "servicio": "",
         "kilometraje": int(request_body["vehiculo_km_actual"]),
         "id_agencia": int(request_body["punto_servicio"]),
-        "comentarios": request_body["comentarios"],
+        "observaciones": f"{json.loads(request_body['tipos_revision_info'])['servicio_nombre']} - {request_body['comentarios']}",
+        "sede": "Bogota"
     }
     if not parsed_data["vin"]:
         parsed_data["vin"] = "00000000000000000"
@@ -280,9 +288,11 @@ def whatsapp_citas(fase, telefono, datos_cita=None, mensaje=None):
 
 
 async def correo_citas(fase, direccion_correo, datos_cita=None, asesor=None, sede=None):
+
     template_context = {}
 
-    template_context["asunto"] = "Seguimiento en linea"
+    asunto = "Seguimiento en linea"
+
     template_context["nombre_agencia"] = settings.AGENCIA
     template_context["cotizacion_url"] = f"http://{settings.DOMINIO}:{settings.PUERTO}/tracker/login/"
     template_context["telefono_agencia"] = ""
@@ -300,7 +310,7 @@ async def correo_citas(fase, direccion_correo, datos_cita=None, asesor=None, sed
 
     if fase == 0:
         template_context["notif"] = True
-        asunto = "Su cita ha quedado agendada"
+        # asunto = "Su cita ha quedado agendada"
 
     html_content = render_to_string("citas_dinissan/correo_notificacion.html", template_context)
 
@@ -318,6 +328,56 @@ async def correo_citas(fase, direccion_correo, datos_cita=None, asesor=None, sed
     except Exception as error:
         print("error")
         print(error)
+
+
+def recordatorio_citas(fase, direccion_correo, datos_cita=None, asesor=None, sede=None, schedule_id=None):
+    # Actualiza el estado de la tarea
+    if schedule_id:
+        ScheduledTask.objects.filter(id=schedule_id).update(status='executing')
+
+    template_context = {}
+
+    asunto = "Recordatorio de cita"
+
+    template_context["nombre_agencia"] = settings.AGENCIA
+    template_context["cotizacion_url"] = f"http://{settings.DOMINIO}:{settings.PUERTO}/tracker/login/"
+    template_context["telefono_agencia"] = ""
+    template_context["privacy_url"] = settings.AVISO_PRIVACIDAD
+    template_context["logo"] = settings.LOGO
+
+    if datos_cita:
+        template_context["cita"] = datos_cita
+        template_context["primer_nombre"] = datos_cita["cliente"].split()[0]
+    if asesor:
+        template_context["asesor"] = asesor
+    if sede:
+        template_context["sede"] = sede
+
+    if fase == 0:
+        template_context["notif"] = True
+
+    html_content = render_to_string("citas_dinissan/correo_notificacion.html", template_context)
+    client_mail = direccion_correo
+
+    try:
+        print("correo1")
+        email = EmailMessage(subject=f"{settings.AGENCIA} | {asunto}", body=html_content, to=[client_mail])
+        email.content_subtype = "html"
+        print("correo2")
+        email.send()
+        print("correo3")
+
+        if schedule_id:
+            ScheduledTask.objects.filter(id=schedule_id).update(
+                status='completed', result='Correo enviado correctamente'
+            )
+        print("CORREO ENVIADO")
+    except Exception as error:
+        print("error")
+        print(error)
+        if schedule_id:
+            ScheduledTask.objects.filter(id=schedule_id).update(status='error', error=str(error))
+
 
 async def correo_cancelar(fase, direccion_correo, datos_cita=None, asesor=None, sede=None):
     template_context = {}

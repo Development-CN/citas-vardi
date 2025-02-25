@@ -10,4 +10,15 @@ urlpatterns = [
     path("api/dinissan", DinissanServices.as_view(), name="api_dinissan"),
     path("api/citas", CitasServices.as_view(), name="api_citas"),
     path("api/agenda", Agenda.as_view(), name="api_agenda"),
+    path("api/agenda", Agenda.as_view(), name="api_agenda"),
+    path(
+        route="login",
+        view=LoginView.as_view(),
+        name="login"
+    ),
+    path(
+        route="logout",
+        view=LogoutView.as_view(),
+        name="logout"
+    ),
 ]

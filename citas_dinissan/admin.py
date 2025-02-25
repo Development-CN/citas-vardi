@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ActividadesCitas, AgenciaTablero, FallaSintoma, MotivoIngreso, MotivoIngresoMazda, VCitasUsuarios
+from .models import ActividadesCitas, AgenciaTablero, FallaSintoma, MotivoIngreso, MotivoIngresoMazda, VCitasUsuarios, Log, DatosSalesForce, ScheduledTask
 
 
 @admin.register(AgenciaTablero)
@@ -51,3 +51,21 @@ class ActividadesCitasAdmin(admin.ModelAdmin):
 class VCitasUsuariosAdmin(admin.ModelAdmin):
     list_display = ("cveasesor", "nombre", "id_agencia", "activo")
     list_filter = ("id_agencia", "activo")
+
+
+@admin.register(Log)
+class LogAdmin(admin.ModelAdmin):
+    list_display = ("id_sesion", "ip_address", "placa", "cedula", "nombre", "celular")
+    list_filter = ("placa", "cedula")
+
+
+@admin.register(DatosSalesForce)
+class DatosSalesForceAdmin(admin.ModelAdmin):
+    list_display = ("id", "placa")
+
+
+@admin.register(ScheduledTask)
+class ScheduledTaskAdmin(admin.ModelAdmin):
+    list_display = ('function_name', 'scheduled_date', 'status', 'created_at')
+    list_filter = ('status', 'scheduled_date')
+    search_fields = ('function_name', 'status')
