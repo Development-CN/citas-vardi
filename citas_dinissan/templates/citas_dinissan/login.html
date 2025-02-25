@@ -1,0 +1,67 @@
+{% extends 'citas_dinissan/base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  .custom-checkbox {
+    --checkbox-color: #101010; /* Define el color deseado para el checkbox */
+  }
+  
+  .custom-checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--checkbox-color);
+    border-radius: 3px;
+    outline: none;
+    transition: background-color 0.3s;
+  }
+  
+  .custom-checkbox input[type="checkbox"]:checked {
+    background-color: var(--checkbox-color);
+    background-image: url('{% static 'citas_dinissan/images/check.png' %}');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+</style>
+
+<div class="row justify-content-center align-items-center vh-100">
+    <div class="col-12">
+        <div class="card bg-white border-0 mx-auto">
+            <div id="0" class="card-body">
+                <div class="text-center">
+                  <img class="mb-4" height="110px" src="{{ settings.LOGO }}" />
+                </div>
+                <h4 class="text-center text-danger mb-3">Citas Web</h4>
+                <h6 class="text-center">
+                  Bienvenido al sistema de agendamiento Web para Mazda Colombia
+                </h6>
+              </div>
+            <form method="POST" action="{% url 'login'%}">
+                {% csrf_token %}
+                <div class="form-row align-items-center justify-content-center">
+                    <div class="form-group col-sm-6">
+                      <label for="username">Username:</label>
+                      <input name="username" type="text" autocapitalize="words" autocomplete="given-name"
+                        class="form-control" id="username" data-nombre="Username"
+                        onkeyup="this.value = this.value.replace(/[^a-zA-Z ]/g, ''); " />
+                    </div>
+                </div>
+                <div class="form-row align-items-center justify-content-center">
+                    <div class="form-group col-sm-6">
+                      <label for="password">Password:</label>
+                      <input name="password" type="password" autocapitalize="words" autocomplete="given-name"
+                        class="form-control" id="password" data-nombre="Password"/>
+                    </div>
+                </div>
+                <button id="next" type="submit" class="btn btn-danger border float-right" style="pointer-events: auto; background-color: #940831; color: white;">
+                    Continuar
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

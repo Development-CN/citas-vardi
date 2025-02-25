@@ -31,6 +31,7 @@
   <div class="col-12">
     <div class="card bg-white border-0 mx-auto">
       <form>
+        <input type="hidden" id="id_sesion" name="id_sesion" value="{{id_sesion}}">
         <!-- Pantalla  de inicio -->
         <div id="0" class="card-body">
           <div class="text-center">
@@ -710,6 +711,1045 @@
 
     return valid;
   }
+
+  $(document).ready(function() {
+    // Detectar cuando el usuario termina de escribir en el input o pierde el foco
+    var id_sesion = {{id_sesion}};
+    $('#vehiculo_placa').on('change', function() {
+        var vehiculo_placa = $(this).val();
+        var ipAddress;
+
+        // Si el valor del input no está vacío
+        if (vehiculo_placa.trim() !== '') {
+            // Realizar la solicitud AJAX
+            fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                // Mostrar la IP en un elemento del DOM
+                var ipAddress = data.ip;
+                console.log("IP Address:", ipAddress);
+
+                // Realizar la solicitud AJAX con la IP obtenida
+                $.ajax({
+                  type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                  data: {
+                      'logs': true,
+                      'id_sesion': id_sesion,
+                      'vehiculo_placa': vehiculo_placa,
+                      'ip_address': ipAddress,
+                  },
+                  cache: false,
+                  headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                  },
+                    success: function(response) {
+                        // Manejar la respuesta en caso de éxito
+                        console.log('Success:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Manejar el error
+                        console.error('Error:', error);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener la IP:', error);
+            });
+        }
+    });
+
+    $('#cliente_cedula').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cedula = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cedula.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_cedula': cedula,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_nombre').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_nombre = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_nombre.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_nombre': cliente_nombre,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_primer_apellido').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_primer_apellido = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_primer_apellido.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_primer_apellido': cliente_primer_apellido,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_segundo_apellido').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_segundo_apellido = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_segundo_apellido.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_segundo_apellido': cliente_segundo_apellido,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_celular').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_celular = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_celular.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_celular': cliente_celular,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_telefono_fijo').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_telefono_fijo = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_telefono_fijo.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_telefono_fijo': cliente_telefono_fijo,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_correo').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_correo = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_correo.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_correo': cliente_correo,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_direccion').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_direccion = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_direccion.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_direccion': cliente_direccion,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_tipo_relacion').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_tipo_relacion = $(this).find('option:selected').text().trim();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_tipo_relacion.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_tipo_relacion': cliente_tipo_relacion,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cliente_medio_confirmacion').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cliente_medio_confirmacion = $(this).find('option:selected').text().trim();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cliente_medio_confirmacion.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cliente_medio_confirmacion': cliente_medio_confirmacion,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_ultimo_km').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_ultimo_km = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_ultimo_km.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_ultimo_km': vehiculo_ultimo_km,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_km_actual').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_km_actual = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_km_actual.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_km_actual': vehiculo_km_actual,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_vin').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_vin = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_vin.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_vin': vehiculo_vin,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_descripcion_modelo_tasa').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_descripcion_modelo_tasa = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_descripcion_modelo_tasa.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_descripcion_modelo_tasa': vehiculo_descripcion_modelo_tasa,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_color').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_color = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_color.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_color': vehiculo_color,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_fecha_vencimiento_soat').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_fecha_vencimiento_soat = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_fecha_vencimiento_soat.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_fecha_vencimiento_soat': vehiculo_fecha_vencimiento_soat,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#vehiculo_fecha_vencimiento_tecnomecanica').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var vehiculo_fecha_vencimiento_tecnomecanica = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (vehiculo_fecha_vencimiento_tecnomecanica.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'vehiculo_fecha_vencimiento_tecnomecanica': vehiculo_fecha_vencimiento_tecnomecanica,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#motivo_ingreso').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var motivo_ingreso = $(this).find('option:selected').text().trim();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (motivo_ingreso.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'motivo_ingreso': motivo_ingreso,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#comentarios').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var comentarios = $(this).val();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (comentarios.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'comentarios': comentarios,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#ciudad').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var ciudad = $(this).find('option:selected').text().trim();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (ciudad.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'ciudad': ciudad,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#punto_servicio').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var punto_servicio = $(this).find('option:selected').text().trim();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (punto_servicio.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'punto_servicio': punto_servicio,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+
+    $('#cita_hora').on('change', function() {
+      var vehiculo_placa = $('#vehiculo_placa').val();
+      var cita_hora = $(this).find('option:selected').text().trim();
+      var ipAddress;
+
+      // Si el valor del input no está vacío
+      if (cita_hora.trim() !== '') {
+          // Realizar la solicitud AJAX
+          fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+              // Mostrar la IP en un elemento del DOM
+              var ipAddress = data.ip;
+              console.log("IP Address:", ipAddress);
+
+              // Realizar la solicitud AJAX con la IP obtenida
+              $.ajax({
+                type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                data: {
+                    'logs': true,
+                    'id_sesion': id_sesion,
+                    'vehiculo_placa': vehiculo_placa,
+                    'cita_hora': cita_hora,
+                    'ip_address': ipAddress,
+                },
+                cache: false,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken")
+                },
+                  success: function(response) {
+                      // Manejar la respuesta en caso de éxito
+                      console.log('Success:', response);
+                  },
+                  error: function(xhr, status, error) {
+                      // Manejar el error
+                      console.error('Error:', error);
+                  }
+              });
+          })
+          .catch(error => {
+              console.error('Error al obtener la IP:', error);
+          });
+      }
+    });
+  })
+
+
 </script>
 
 <!--CITA EXISTENTE-->
