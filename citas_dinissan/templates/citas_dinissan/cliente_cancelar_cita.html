@@ -104,6 +104,26 @@
           cache: false,
           headers: {
             "X-CSRFToken": Cookies.get('csrftoken')
+          },
+          success: function(response) {
+            // Si la cita se cancela correctamente, cerrar sesión
+            $.ajax({
+              type: "POST",
+              url: "{% url 'logout' %}",
+              headers: {
+                "X-CSRFToken": Cookies.get('csrftoken')
+              },
+              success: function() {
+                // Redirigir al usuario al login después de cerrar sesión
+                window.location.href = "{% url 'login' %}";
+              },
+              error: function() {
+                console.error("Error al cerrar sesión.");
+              }
+            });
+          },
+          error: function() {
+            console.error("Error al cancelar la cita.");
           }
         });
       });

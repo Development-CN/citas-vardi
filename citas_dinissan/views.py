@@ -2,7 +2,6 @@ import asyncio
 import json
 from datetime import datetime, date, timedelta
 
-
 import requests as api
 from requests.auth import HTTPBasicAuth
 from django.conf import settings
@@ -47,7 +46,6 @@ DISPONIBILIDAD_ASESOR = settings.CITAS_TABLEROAPI + "/api/disponibilidad_asesor"
 
 URL_DATOS_CLIENTE = settings.COREAPI_DATOS_CLIENTE + "/api/v1.2/tablero/info_crm/"
 HEADERS = {"Accept": "application/json", "Content-Type": "application/json"}
-
 
 # Define dinámicamente si la clase incluye LoginRequiredMixin o no
 if settings.LOGIN_REQUIRED:
@@ -611,9 +609,10 @@ class Agenda(APIView):
                     "sede": model_to_dict(sede),
                 }
 
-                fecha_hora_str = f"{datos_cita['fecha']} 12:00:00"
+                fecha_hora_str = f"{datos_cita['fecha']} 11:00:00"
                 run_at = datetime.strptime(fecha_hora_str, "%Y-%m-%d %H:%M:%S")
                 run_at = run_at - timedelta(days=1)
+                run_at_qcluster = run_at - timedelta(hours=6)
 
                 schedule_task = ScheduledTask.objects.create(
                     function_name=function_name,
@@ -762,9 +761,9 @@ class ClienteCancelarCita(LoginRequiredMixin, TemplateView):
             cita.id_estado = 3
             cita.save()
 
-            schedule_task = ScheduledTask.objects.get(appointment=update_cita)
+            schedule_task = ScheduledTask.objects.get(appointment=cita)
 
-            Schedule.objects.filter(id=schedule_task.id).delete()
+            Schedule.objects.filter(kwargs__contains="{'schedule_id': " + str(schedule_task.id) + "}").delete()
 
             schedule_task.delete()
 
@@ -907,11 +906,11 @@ class ClienteReagendarCita(LoginRequiredMixin, TemplateView):
 
             schedule_task = ScheduledTask.objects.get(appointment=update)
 
-            Schedule.objects.filter(id=schedule_task.id).delete()
+            Schedule.objects.filter(kwargs__contains="{'schedule_id': {schedule_task.id}}").delete()
 
             schedule_task.delete()
 
-            fecha_hora_str = f"{r['fecha']} 12:00:00"
+            fecha_hora_str = f"{r['fecha']} 11:00:00"
             run_at = datetime.strptime(fecha_hora_str, "%Y-%m-%d %H:%M:%S")
             run_at = run_at - timedelta(days=1)
 
