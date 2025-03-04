@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.auth.models import User
+
 
 class AgenciaTablero(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -310,3 +312,103 @@ class VInformacionCitas(models.Model):
     class Meta:
         managed = False  # Created from a view. Don't remove.
         db_table = "v_informacion_citas"
+
+
+class Log(models.Model):
+    # Modelo de Log
+
+    id_sesion = models.IntegerField(null=True)
+    ip_address = models.CharField(max_length=100, null=True)
+    placa = models.CharField(max_length=100, null=True)
+    cedula = models.CharField(max_length=100, null=True)
+    nombre = models.CharField(max_length=100, null=True)
+    primer_apellido = models.CharField(max_length=100, null=True)
+    segundo_apellido = models.CharField(max_length=100, null=True)
+    celular = models.CharField(max_length=100, null=True)
+    telefono_fijo = models.CharField(max_length=100, null=True)
+    correo = models.CharField(max_length=100, null=True)
+    direccion = models.CharField(max_length=100, null=True)
+    tipo_de_relacion = models.CharField(max_length=100, null=True)
+    medio_de_confirmacion = models.CharField(max_length=100, null=True)
+    ultimo_km = models.CharField(max_length=100, null=True)
+    km_actual = models.CharField(max_length=100, null=True)
+    vin = models.CharField(max_length=100, null=True)
+    descripcion_modelo_tasa = models.CharField(max_length=200, null=True)
+    color = models.CharField(max_length=100, null=True)
+    fecha_de_vencimiento_soat = models.CharField(max_length=100, null=True)
+    fecha_de_vencimiento_tecnomecanica = models.CharField(max_length=100, null=True)
+    motivo_de_ingreso = models.CharField(max_length=200, null=True)
+    tipo_de_revision_o_paquete = models.CharField(max_length=200, null=True)
+    comentarios = models.CharField(max_length=2000, null=True)
+    ciudad = models.CharField(max_length=2000, null=True)
+    punto_de_servicio = models.CharField(max_length=2000, null=True)
+    fecha_cita = models.DateField(null=True)
+    hora_cita = models.TimeField(null=True)
+    fecha = models.DateField()
+    hora = models.TimeField()
+
+    no_cita = models.CharField(max_length=100, null=True)
+    no_cita_vardi = models.CharField(max_length=100, null=True)
+    id_hd = models.CharField(max_length=100, null=True)
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        # Retorna el id
+        return f"{self.id}"
+    class Meta:
+        verbose_name_plural = "Logs"
+
+class DatosSalesForce(models.Model):
+    vin = models.CharField(max_length=17, null=True, blank=True)
+    placa = models.CharField(max_length=100, null=True, blank=True)
+    motor = models.CharField(max_length=100, null=True, blank=True)
+    codigoLinea = models.CharField(max_length=100, null=True, blank=True)
+    descripcionLinea = models.CharField(max_length=100, null=True, blank=True)
+    opcion = models.CharField(max_length=100, null=True, blank=True)
+    vis = models.CharField(max_length=100, null=True, blank=True)
+    codColor = models.CharField(max_length=100, null=True, blank=True)
+    color = models.CharField(max_length=100, null=True, blank=True)
+    version = models.CharField(max_length=100, null=True, blank=True)
+    identificadorProducto = models.CharField(max_length=100, null=True, blank=True)
+    anioModelo = models.CharField(max_length=100, null=True, blank=True)
+    servicio = models.CharField(max_length=100, null=True, blank=True)
+    fechaEntrega = models.CharField(max_length=100, null=True, blank=True)
+    fechaMatricula = models.CharField(max_length=100, null=True, blank=True)
+    ciudadPlaca = models.CharField(max_length=100, null=True, blank=True)
+    codConcesionarioVendedor = models.CharField(max_length=100, null=True, blank=True)
+    ConcesionarioVendedor = models.CharField(max_length=100, null=True, blank=True)
+    campaniaSeguridadPendiente = models.IntegerField(null=True, blank=True)
+
+    datetime_created = models.DateTimeField(auto_now_add=True)
+    datetime_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        # Retorna el id
+        return f"{self.id}"
+
+    class Meta:
+        verbose_name_plural = "DatosSalesForce"
+
+class ScheduledTask(models.Model):
+
+    appointment = models.ForeignKey(ActividadesCitas, on_delete=models.CASCADE)
+
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('executing', 'Executing'),
+        ('completed', 'Completed'),
+        ('error', 'Error'),
+    )
+
+    function_name = models.CharField(max_length=255)
+    parameters = models.JSONField()
+    scheduled_date = models.DateTimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    result = models.TextField(null=True, blank=True)
+    error_message = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.function_name} scheduled for {self.scheduled_date}"

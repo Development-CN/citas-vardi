@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+migrations/
+server_service.bat
+error.txt
+input.txt
+output.txt

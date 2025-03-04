@@ -7,6 +7,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -192,14 +193,24 @@
     <script>
       function disponibilidad_asesor() {
         let data = {};
-
+      
         data.disponibilidad = true;
         data.id_asesor = $(".list-group-item-asesor.active").data("id_asesor");
         data.id_agencia = $("#punto_servicio").val();
         data.fecha = $("#datepicker").val();
-
+      
         $("#cita_hora").empty();
-
+      
+        // Muestra el modal de carga
+        Swal.fire({
+          title: 'Obteniendo horarios disponibles',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+      
         fetch("{% url 'api_citas' %}", {
           method: "POST",
           headers: {
@@ -207,18 +218,28 @@
             "Accept": "application/json"
           },
           body: JSON.stringify(data),
-        }).then((response) => response.json())
+        })
+          .then((response) => response.json())
           .then((data) => {
             console.log(data);
             data.forEach(hora => {
-              $("#cita_hora").append(`
-                <option>${hora}</option>
-              `)
+              $("#cita_hora").append(`<option>${hora}</option>`);
             });
+      
+            $("#cita_hora").val($("#cita_hora option:disabled").val());
+      
             $("#cita_hora").append(`
               <input type="hidden" name="id_asesor" id="id_asesor" value="${$('.list-group-item-asesor.active').data('id_asesor')}">
-            `)
+            `);
+      
+            // Cierra el modal de carga cuando termina la operación
+            Swal.close();
           })
+          .catch((error) => {
+            console.error(error);
+            // Cierra el modal de carga en caso de error
+            Swal.close();
+          });
       }
 
       $(function () {
@@ -239,66 +260,104 @@
         data.info_cliente = true;
         data.placa = $("#vehiculo_placa").val();
         data.cedula = $("#cliente_cedula").val();
-
+    
         if ($("#habeas_data").is(":checked")) {
-
           Swal.fire({
-              title: 'Obteniendo el modelo...',
-              text: 'Espere mientras se cargan los datos.',
-              allowOutsideClick: false,
-              didOpen: () => {
-                  Swal.showLoading(); // Muestra el icono de carga
-              }
+            title: 'Obteniendo el modelo...',
+            text: 'Espere mientras se cargan los datos.',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading(); // Muestra el icono de carga
+            }
           });
-
-          fetch("{% url 'api_dinissan' %}", {
+    
+          // Timeout de 120 segundos
+          const timeout = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Timeout de respuesta excedido')), 120000)
+          );
+    
+          // Fetch con tiempo límite
+          const fetchRequest = fetch("{% url 'api_dinissan' %}", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json"
             },
             body: JSON.stringify(data),
-          }).then((response) => response.json())
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.json();
+          });
+    
+          // Usar Promise.race para manejar el timeout
+          Promise.race([fetchRequest, timeout])
             .then((data) => {
               Swal.close();
+
+              // Validación de campaña de seguridad pendiente
+              if (data.observaciones == 1) {
+                Swal.fire({
+                  icon: 'info',
+                  text: 'Detectamos una campaña de seguridad pendiente en su vehículo. Esto podría requerir tiempo adicional en el taller. Agradecemos su comprensión y colaboración.',
+                });
+                $("#comentarios").val("Con Campaña");
+              }
+              else {
+                $("#comentarios").val("Sin Campaña");
+              }
+
               try {
-                if (data == "tracker"){
+                if (data == "tracker") {
                   $("#cita_existente").modal("toggle");
                 }
-                $("#next").show()
+                $("#next").show();
+    
                 // Cliente
-                $("#cliente_nombre").val(data.cliente.nombre ?? "");
-                $("#cliente_primer_apellido").val(data.cliente.primerApellido ?? "");
-                $("#cliente_segundo_apellido").val(data.cliente.segundoApellido ?? "");
-                $("#cliente_celular").val(data.cliente.celular ?? "");
-                $("#cliente_telefono_fijo").val(data.cliente.telefonoFijo ?? "");
-                $("#cliente_correo").val(data.cliente.correo ?? "");
-                $("#cliente_direccion").val(data.cliente.direccion ?? "");
+                if (data.cliente) {
+                    $("#cliente_nombre").val(data.cliente.nombre ?? "").change();
+                    $("#cliente_primer_apellido").val(data.cliente.primerApellido ?? "").change();
+                    $("#cliente_segundo_apellido").val(data.cliente.segundoApellido ?? "").change();
+                    $("#cliente_celular").val(data.cliente.celular ?? "").change();
+                    $("#cliente_telefono_fijo").val(data.cliente.telefonoFijo ?? "").change();
+                    $("#cliente_correo").val(data.cliente.correo ?? "").change();
+                    $("#cliente_direccion").val(data.cliente.direccion ?? "").change();
+                }
 
+    
                 // Vehículo
-                $("#vehiculo_ultimo_km").val(data.vehiculo.ultimoKilometraje ?? "");
-                $("#vehiculo_vin").val(data.vehiculo.chasis ?? "");
-                $("#vehiculo_descripcion_modelo_tasa").val(data.vehiculo.descripcionModeloTasa ?? "");
-                $("#vehiculo_codigo_modelo_tasa").val(data.vehiculo.codigoModeloTasa ?? "")
-                
+                if (data.vehiculo) {
+                    $("#vehiculo_ultimo_km").val(data.vehiculo.ultimoKilometraje ?? "").change();
+                    $("#vehiculo_vin").val(data.vehiculo.chasis ?? "").change();
+                    $("#vehiculo_descripcion_modelo_tasa").val(data.vehiculo.descripcionModeloTasa ?? "").change();
+                    $("#vehiculo_codigo_modelo_tasa").val(data.vehiculo.codigoModeloTasa ?? "").change();
+                }
+
+                console.log("data")
+                console.log(data)
+    
                 // Hidden Info
-                if (data.ano){
-                  $("#ano").val(data.ano ?? "");
-                }
-                if (data.vin){
-                  $("#vehiculo_vin").val(data.vin ?? "");
-                }
-                if (data.color){
-                  $("#vehiculo_color").val(data.color ?? "");
-                }
+                $("#ano").val(data.ano ?? "").change();
+                $("#vehiculo_color").val(data.color ?? "").change();
               } catch (error) {
-                // pass
+                console.error("Error al procesar los datos:", error);
               }
               $("#datos_cliente_vehiculo").fadeIn();
             })
+            .catch((error) => {
+              Swal.close();
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message || "Ocurrió un error inesperado",
+              });
+              $("#datos_cliente_vehiculo").fadeIn();
+            });
         }
-      })
+      });
     </script>
+    
 
     <!-- Obtención de tipos de revision o paquetes -->
     <script>
@@ -365,6 +424,50 @@
             <input type="hidden" id="tipos_revision_info" name="tipos_revision_info" value='${tipo_revision_info}'>
           </tr>
         `);
+
+        var id_sesion = {{id_sesion}};
+        var vehiculo_placa = $('#vehiculo_placa').val();
+        var tipos_revision_info = tipo_revision_info;
+        var ipAddress;
+  
+        // Si el valor del input no está vacío
+        if (tipos_revision_info.trim() !== '') {
+            // Realizar la solicitud AJAX
+            fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                // Mostrar la IP en un elemento del DOM
+                var ipAddress = data.ip;
+                console.log("IP Address:", ipAddress);
+  
+                // Realizar la solicitud AJAX con la IP obtenida
+                $.ajax({
+                  type: 'POST',                // Cambia el método si es necesario (GET, POST, etc.)
+                  data: {
+                      'logs': true,
+                      'id_sesion': id_sesion,
+                      'vehiculo_placa': vehiculo_placa,
+                      'tipos_revision_info': tipos_revision_info,
+                      'ip_address': ipAddress,
+                  },
+                  cache: false,
+                  headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken")
+                  },
+                    success: function(response) {
+                        // Manejar la respuesta en caso de éxito
+                        console.log('Success:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        // Manejar el error
+                        console.error('Error:', error);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener la IP:', error);
+            });
+        }
       })
 
       // Borrar tipo de revision
@@ -520,6 +623,7 @@
 
     <!-- Agendar cita -->
     <script>
+
       $("#finish").click(function () {
 
         Swal.fire({
@@ -539,8 +643,10 @@
         fetch("{% url 'api_agenda' %}", {
           method: "POST",
           headers: {
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "X-CSRFToken": Cookies.get("csrftoken")
           },
+          credentials: 'include',
           body: form_data,
         }).then((response) => {
           console.log("response")

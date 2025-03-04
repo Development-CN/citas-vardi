@@ -29,13 +29,13 @@
           Deseas agendar una nueva cita?
         </p>
         <div class="text-center">
-          <a href="{% url 'client_new' vin %}" class="btn btn-blueberry mt-1 shadow" for="photo_id" style="background-color: #940831; color: white">
+          <button id="logoutBtn" class="btn btn-blueberry mt-1 shadow" style="background-color: #940831; color: white">
             <i class="fas fa-receipt fa-lg"></i>
             Agendar Nueva Cita
-          </a>
+          </button>
         </div>
         <div class="text-center">
-          <a href="{{}]" type="button" class="btn btn-light text-info border mt-3 shadow" style="background-color: #940831; color: white">
+          <a href="" type="button" class="btn btn-light text-info border mt-3 shadow" style="background-color: #940831; color: white">
             <i class="far fa-comments fa-lg"></i>
             Enviar Comentarios
           </a>
@@ -63,6 +63,29 @@
   NAVEGATION
 -->
 <script>
+  // Escucha el clic en el botón
+  document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    fetch("{% url 'logout' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "X-CSRFToken": Cookies.get("csrftoken"),
+      },
+      credentials: 'include'
+    })
+    .then(response => {
+      if (response.ok) {
+        // Redirige al login o a la página deseada tras el logout
+        window.location.href = "{% url 'login' %}";
+      } else {
+        console.error('Error al cerrar sesión.');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  });
+
+
   var current_form = 0;
   var last_form = $(".card-body").length - 1;
 
@@ -81,6 +104,26 @@
           cache: false,
           headers: {
             "X-CSRFToken": Cookies.get('csrftoken')
+          },
+          success: function(response) {
+            // Si la cita se cancela correctamente, cerrar sesión
+            $.ajax({
+              type: "POST",
+              url: "{% url 'logout' %}",
+              headers: {
+                "X-CSRFToken": Cookies.get('csrftoken')
+              },
+              success: function() {
+                // Redirigir al usuario al login después de cerrar sesión
+                window.location.href = "{% url 'login' %}";
+              },
+              error: function() {
+                console.error("Error al cerrar sesión.");
+              }
+            });
+          },
+          error: function() {
+            console.error("Error al cancelar la cita.");
           }
         });
       });
