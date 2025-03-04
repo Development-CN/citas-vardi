@@ -91,7 +91,6 @@ class ClienteNuevaCita(BaseClass):
             except:
                 log = Log.objects.create(id_sesion=r.get("id_sesion", None), fecha=date.today(), hora=datetime.now())
             
-            print("a perro")
             print(r)
             print(r.get("tipos_revision_info", None))
             print(r.get("cita_fecha", None))
