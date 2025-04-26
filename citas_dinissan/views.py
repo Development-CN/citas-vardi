@@ -398,7 +398,8 @@ class Agenda(APIView):
         else:
             username = None
         
-        print(request.user.username)
+        print("username")
+        print(username)
 
         query_dict['username'] = username
 
@@ -467,7 +468,7 @@ class Agenda(APIView):
         
         print("r")
         print(r)
-        datos_cita = get_data_api(r)
+        datos_cita = get_data_api(r, username)
 
         agencia_url = AgenciaTablero.objects.get(id_agencia=datos_cita["id_agencia"]).url_api_tablero
         sede = AgenciaTablero.objects.get(id_agencia=datos_cita["id_agencia"])
@@ -954,8 +955,16 @@ class AppointmentsView(APIView):
     def post(self, request):
         r = request.POST
 
+        if request.user.is_authenticated:
+            username = request.user.username
+        else:
+            username = None
+        
+        print("usernamee")
+        print(username)
+
         servicios_peticion = r.getlist("servicio")
-        datos_cita = get_data_api(r)
+        datos_cita = get_data_api(r, username)
 
         print("datos_cita")
         print(datos_cita)

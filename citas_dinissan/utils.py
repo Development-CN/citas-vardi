@@ -170,7 +170,7 @@ class NotificacionCorreo:
             return False, self.mensaje
 
 
-def get_data_api(request_body):
+def get_data_api(request_body, username):
     if request_body.get("notificaciones-whatsapp") == "on":
         notificaciones = True
     else:
@@ -211,7 +211,7 @@ def get_data_api(request_body):
         "servicio": "",
         "kilometraje": int(request_body["vehiculo_km_actual"]),
         "id_agencia": int(request_body["punto_servicio"]),
-        "observaciones": f"{json.loads(request_body['tipos_revision_info'])['servicio_nombre']} - {request_body['comentarios']}",
+        "observaciones": f"{json.loads(request_body['tipos_revision_info'])['servicio_nombre']} - {request_body['comentarios']} - {username}",
         "sede": "Bogota"
     }
     if not parsed_data["vin"]:
