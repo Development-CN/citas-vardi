@@ -170,7 +170,7 @@ class NotificacionCorreo:
             return False, self.mensaje
 
 
-def get_data_api(request_body):
+def get_data_api(request_body, username):
     if request_body.get("notificaciones-whatsapp") == "on":
         notificaciones = True
     else:
@@ -211,7 +211,7 @@ def get_data_api(request_body):
         "servicio": "",
         "kilometraje": int(request_body["vehiculo_km_actual"]),
         "id_agencia": int(request_body["punto_servicio"]),
-        "observaciones": f"{json.loads(request_body['tipos_revision_info'])['servicio_nombre']} - {request_body['comentarios']}",
+        "observaciones": f"{json.loads(request_body['tipos_revision_info'])['servicio_nombre']} - {request_body['comentarios']} - {username}",
         "sede": "Bogota"
     }
     if not parsed_data["vin"]:
@@ -290,64 +290,46 @@ def whatsapp_citas(fase, telefono, datos_cita=None, mensaje=None):
 
 async def correo_citas(fase, direccion_correo, datos_cita=None, asesor=None, sede=None):
 
-    # template_context = {}
+    template_context = {}
 
-    # asunto = "Seguimiento en linea"
+    asunto = "Seguimiento en linea"
 
-    # # template_context["nombre_agencia"] = settings.AGENCIA
-    # # template_context["cotizacion_url"] = f"http://{settings.DOMINIO}:{settings.PUERTO}/tracker/login/"
-    # # template_context["telefono_agencia"] = ""
-    # # template_context["privacy_url"] = settings.AVISO_PRIVACIDAD
-    # # template_context["logo"] = settings.LOGO
+    template_context["nombre_agencia"] = settings.AGENCIA
+    template_context["cotizacion_url"] = f"http://{settings.DOMINIO}:{settings.PUERTO}/tracker/login/"
+    template_context["telefono_agencia"] = ""
+    template_context["privacy_url"] = settings.AVISO_PRIVACIDAD
+    template_context["logo"] = settings.LOGO
 
-    # # if datos_cita:
-    # #     template_context["cita"] = datos_cita
-    # # if datos_cita:
-    # #     template_context["primer_nombre"] = datos_cita["cliente"].split()[0]
-    # # if asesor:
-    # #     template_context["asesor"] = asesor
-    # # if sede:
-    # #     template_context["sede"] = ""
+    if datos_cita:
+        template_context["cita"] = datos_cita
+    if datos_cita:
+        template_context["primer_nombre"] = datos_cita["cliente"].split()[0]
+    if asesor:
+        template_context["asesor"] = asesor
+    if sede:
+        template_context["sede"] = sede
 
-    # if fase == 0:
-    #     template_context["notif"] = True
-    #     # asunto = "Su cita ha quedado agendada"
+    if fase == 0:
+        template_context["notif"] = True
+        # asunto = "Su cita ha quedado agendada"
 
-    # html_content = render_to_string("citas_dinissan/correo_notificacion.html", template_context)
+    html_content = render_to_string("citas_dinissan/correo_notificacion.html", template_context)
 
-    # client_mail = direccion_correo
-
-    # pprint.pprint(template_context)
-    # pprint.pprint(client_mail)
-
-    # try:
-    #     print("correo1")
-    #     email = EmailMessage(subject=f"{settings.AGENCIA} | {asunto}", body=html_content, to=[client_mail])
-    #     email.content_subtype = "html"
-    #     print("correo2")
-    #     email.send()
-    #     print("correo3")
-
-    #     print("CORREO ENVIADO")
-    # except Exception as error:
-    #     print("error")
-    #     print(error)
+    client_mail = direccion_correo
 
     try:
-        test_subject = f"Prueba de correo - {settings.AGENCIA}"
-        test_body = "Este es un correo de prueba para verificar la configuración SMTP en Django."
-        email = EmailMessage(
-            subject=test_subject,
-            body=test_body,
-            to=[direccion_correo]
-        )
-        email.content_subtype = "plain"  # Usamos plain text para simplificar
-        print("Enviando correo de prueba...")
-        email.send()  # Para probar, usamos el envío sincrónico
-        print("Correo de prueba enviado correctamente")
+        print("correo1")
+        email = EmailMessage(subject=f"{settings.AGENCIA} | {asunto}", body=html_content, to=[client_mail])
+        email.content_subtype = "html"
+        print("correo2")
+        email.send()
+        print("correo3")
+
+        print("CORREO ENVIADO")
     except Exception as error:
-        print("Error al enviar correo de prueba:")
+        print("error")
         print(error)
+
 
 
 def recordatorio_citas(fase, direccion_correo, datos_cita=None, asesor=None, sede=None, schedule_id=None):
